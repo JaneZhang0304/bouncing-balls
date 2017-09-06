@@ -13,14 +13,22 @@ function random(min,max) {
   return num;
 }
 
-function Ball(x,y,velX,velY,color,size){
+function Shape(x,y,velX,velY,exists){
 	this.x = x;
-	this.y = y;		
+	this.y = y;
 	this.velX = velX;
 	this.velY = velY;
+	this.exists = exists;
+}
+
+function Ball(x,y,velX,velY,color,size,exists){
+	Shape.call(this,x,y,velX,velY,exists);
 	this.color = color;
 	this.size = size;	
 }
+
+Ball.prototype=Object.create(Shape.prototype);
+Ball.prototype.constructor = Ball;
 
 Ball.prototype.draw = function(){
 	ctx.beginPath();
