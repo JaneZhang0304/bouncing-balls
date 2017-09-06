@@ -21,10 +21,76 @@ function Shape(x,y,velX,velY,exists){
 	this.exists = exists;
 }
 
+function EvilCircle(x,y){
+	var velX = 20;
+	var velY = 20;
+	Shape.call(this,x,y,velX,velY,true);
+	this.color = 'white';
+	this.size = 10;
+}
+EvilCircle.prototype = Object.create(Shape.prototype);
+EvilCircle.prototype.constructor = EvilCircle;
+
+EvilCircle.prototype.draw = function(){
+	ctx.beginPath();
+	ctx.lineWidth=3;
+	ctx.strokeStyle = this.color;
+	ctx.arc(this.x,this.y,this.size,0,2*Math.PI);
+	ctx.stroke();
+}
+EvilCircle.prototype.checkBounds=function(){
+	
+	this.size = 10;
+	if((this.x+this.size)>=width){	
+		this.size = 8;
+		this.x = width-this.size;
+	}
+	if((this.x-this.size)<=0){		
+		this.size = 8;
+		this.x =this.size;
+	}
+	if((this.y+this.size)>=height){		
+		this.size = 8;
+		this.y = height-this.size;
+	}
+	if((this.y-this.size)<0){		
+		this.size = 8;
+		this.y = this.size;
+	}	
+	
+}
+EvilCircle.prototype.setControls=function(){
+	var _this = this; // !!!! 'cause _this will be used below
+	window.onkeydown = function(e){
+		if(e.keyCode === 65){
+			_this.x -= _this.velX;// move left     A
+		}else if(e.keyCode === 68){
+			_this.x += _this.velX;// move right    D
+		}else if(e.keyCode === 87){
+			_this.y -= _this.velY;// move up       W
+		}else if(e.keyCode === 83){
+			_this.y += _this.velY;// move down     S
+		}
+		
+	}
+}
+EvilCircle.prototype.collisionDetect = function(){
+	for(var j=0,l=balls.length;j<l;j++){
+		if(balls[j].exists){
+			var dx = this.x-balls[j].x;
+			var dy = this.y-balls[j].y;
+			var distance = Math.sqrt(dx*dx+dy*dy);
+			if(distance <this.size+balls[j].size){
+				balls[j].exists = false;
+			}		
+		}			
+	}
+}
+
 function Ball(x,y,velX,velY,color,size,exists){
 	Shape.call(this,x,y,velX,velY,exists);
 	this.color = color;
-	this.size = size;	
+	this.size = size;
 }
 
 Ball.prototype=Object.create(Shape.prototype);
@@ -77,15 +143,27 @@ function loop(){
 		random(-7,7),
 		random(-7,7),
 		'rgb('+random(0,255)+','+random(0,255)+','+random(0,255)+')',
-		random(10,20));
+		random(10,20),
+		true);
 		balls.push(ball);
 	}
 	for(var i=0,l=balls.length;i<l;i++){
-		balls[i].draw();
-		balls[i].update();
-		balls[i].collisionDetect();
+        if(balls[i].exists){
+			balls[i].draw();
+			balls[i].update();
+			balls[i].collisionDetect();	
+		}		
 	}
+	
+	evilCircle.draw();
+	evilCircle.checkBounds();
+	evilCircle.collisionDetect();
+	
 	requestAnimationFrame(loop);
 }
 
+var evilCircle = new EvilCircle(50,50);
+evilCircle.setControls();
+
 loop();
+
