@@ -40,25 +40,18 @@ EvilCircle.prototype.draw = function(){
 	ctx.stroke();
 }
 EvilCircle.prototype.checkBounds=function(){
-	
-	this.size = 10;
-	if((this.x+this.size)>=width){	
-		this.size = 8;
+	if((this.x+this.size)>=width){		
 		this.x = width-this.size;
 	}
-	if((this.x-this.size)<=0){		
-		this.size = 8;
+	if((this.x-this.size)<=0){				
 		this.x =this.size;
 	}
-	if((this.y+this.size)>=height){		
-		this.size = 8;
+	if((this.y+this.size)>=height){				
 		this.y = height-this.size;
 	}
-	if((this.y-this.size)<0){		
-		this.size = 8;
+	if((this.y-this.size)<0){				
 		this.y = this.size;
 	}	
-	
 }
 EvilCircle.prototype.setControls=function(){
 	var _this = this; // !!!! 'cause _this will be used below
