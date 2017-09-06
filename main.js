@@ -2,6 +2,7 @@
 
 var canvas = document.querySelector('canvas');
 var ctx = canvas.getContext('2d');
+var p = document.querySelector('p');
 
 var width = canvas.width = window.innerWidth;
 var height = canvas.height = window.innerHeight;
@@ -134,6 +135,7 @@ Ball.prototype.collisionDetect = function(){
 
 var balls = [];
 function loop(){
+	var count = 0;	
 	ctx.fillStyle='rgba(0,0,0,0.25)';
 	ctx.fillRect(0,0,width,height);
 	while(balls.length<25){
@@ -147,17 +149,21 @@ function loop(){
 		true);
 		balls.push(ball);
 	}
+	
+	evilCircle.draw();
+	evilCircle.checkBounds();
+	evilCircle.collisionDetect();
+	
 	for(var i=0,l=balls.length;i<l;i++){
         if(balls[i].exists){
 			balls[i].draw();
 			balls[i].update();
 			balls[i].collisionDetect();	
+			count++;
 		}		
 	}
 	
-	evilCircle.draw();
-	evilCircle.checkBounds();
-	evilCircle.collisionDetect();
+	p.textContent = 'Ball Count:'+count;	
 	
 	requestAnimationFrame(loop);
 }
